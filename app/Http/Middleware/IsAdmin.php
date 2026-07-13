@@ -11,7 +11,7 @@ class IsAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user() || !$request->user()->is_admin) {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+            abort(403, 'You do not have access to this page.');
         }
 
         return $next($request);
