@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+    display: none !important;
+}
+
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity 0.7s ease-out,
+        transform 0.7s ease-out;
+}
+.fade-in-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hover-lift {
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px -8px rgba(99, 102, 241, 0.2);
+}
+
+.nav-underline {
+    position: relative;
+}
+.nav-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0;
+    height: 2px;
+    background-image: linear-gradient(90deg, #818cf8, #22d3ee);
+    transition: width 0.25s ease;
+}
+.nav-underline:hover::after,
+.nav-underline.active::after {
+    width: 100%;
+}
+
+.btn-scale {
+    transition: transform 0.2s ease;
+}
+.btn-scale:hover {
+    transform: scale(1.04);
+}
+
+.hero-fade {
+    animation: heroFadeIn 0.9s ease-out both;
+}
+@keyframes heroFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fix autofill background di Chrome/Edge/Safari supaya tetap dark */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #0a0e14 inset !important;
+    -webkit-text-fill-color: #e5e7eb !important;
+    caret-color: #e5e7eb;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Flatpickr custom dark theme matching portfolio accent tokens */
+.flatpickr-calendar {
+    background: #111827;
+    border: 1px solid #374151;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.flatpickr-calendar.arrowTop::before,
+.flatpickr-calendar.arrowTop::after {
+    border-bottom-color: #111827;
+}
+
+.flatpickr-months {
+    padding: 0.5rem 0;
+}
+
+.flatpickr-month {
+    color: #fff;
+    fill: #fff;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    background: transparent;
+    color: #fff;
+}
+
+.flatpickr-current-month input.cur-year {
+    color: #fff;
+}
+
+.flatpickr-weekday {
+    background: transparent;
+    color: #9ca3af;
+}
+
+.flatpickr-day {
+    color: #e5e7eb;
+    border-radius: 0.5rem;
+}
+
+.flatpickr-day.today {
+    border-color: #6366f1; /* accent-500 */
+}
+
+.flatpickr-day:hover {
+    background: #1f2937;
+    border-color: #1f2937;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+    background-image: linear-gradient(
+        90deg,
+        #818cf8,
+        #22d3ee
+    ); /* bg-gradient-accent */
+    border-color: transparent;
+    color: #0b0f19;
+    font-weight: 600;
+}
+
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+    color: #4b5563;
+}
+
+.flatpickr-prev-month:hover svg,
+.flatpickr-next-month:hover svg {
+    fill: #6366f1; /* accent-500 */
+}
+
+.flatpickr-day.nextMonthDay,
+.flatpickr-day.prevMonthDay {
+    color: #4b5563;
+}
