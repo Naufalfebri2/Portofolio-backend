@@ -1,5 +1,5 @@
 <x-layouts.portfolio title="Projects — Naufal Febriansyah"
-    description="A collection of projects by Naufal Febriansyah: Kelolain (SaaS invoice & POS), Employee Attendance App (Flutter), and other solo web projects.">
+    description="A collection of projects by Naufal Febriansyah: KLolain (SaaS invoice & POS), Employee Attendance App (Flutter), and other solo web projects.">
 
     <section class="max-w-6xl px-4 py-16 mx-auto sm:px-6 lg:px-8 fade-in-up">
         <h1 class="mb-2 text-3xl font-bold text-white">All Projects</h1>

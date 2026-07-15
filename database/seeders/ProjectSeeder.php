@@ -10,8 +10,8 @@ class ProjectSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Kelolain
-        $kelolain = Project::create([
+        // 1. KLolain
+        $KLolain = Project::create([
             'title' => 'KLolain — Business Suite',
             'description' => 'SaaS invoice and point-of-sale platform for Indonesian SMEs. Multi-role (Owner, Admin, Super Admin) with Analytics, Product Moderation, Ticketing, User Management, and automated backup system modules.',
             'type' => 'team',
@@ -22,10 +22,10 @@ class ProjectSeeder extends Seeder
             'is_featured' => true,
             'order' => 1,
         ]);
-        $kelolain->technologies()->attach(
+        $KLolain->technologies()->attach(
             Technology::whereIn('name', ['Laravel 12', 'PHP 8.3', 'Laravel Sanctum', 'PostgreSQL', 'Eloquent ORM', 'RESTful API'])->pluck('id')
         );
-        $kelolain->images()->createMany([
+        $KLolain->images()->createMany([
             ['image_path' => 'projects/klolain/Dashbord.png', 'caption' => 'Seller Dashboard', 'order' => 1],
             ['image_path' => 'projects/klolain/HALAMAN PRODUK.png', 'caption' => 'Product Page', 'order' => 2],
             ['image_path' => 'projects/klolain/Invoice Kelolain (Pending).png', 'caption' => 'Pending Invoice', 'order' => 3],

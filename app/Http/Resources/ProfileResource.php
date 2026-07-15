@@ -12,6 +12,7 @@ class ProfileResource extends JsonResource
     {
         return [
             'name'           => $this->name,
+            'role'           => $this->role,
             'bio'            => $this->bio,
             'photo'          => $this->photo ? Storage::url($this->photo) : null,
             'resume_url'     => $this->resume_path ? Storage::url($this->resume_path) : null,

@@ -64,7 +64,8 @@ new class extends Component {
 
 <div>
     @if ($submitted)
-        <div class="p-4 mb-6 border rounded-lg bg-accent-900/30 border-accent-500/40 text-accent-300">
+        <div
+            class="p-4 mb-6 border rounded-lg bg-accent-100 dark:bg-accent-900/30 border-accent-500/40 text-accent-700 dark:text-accent-300">
             <p class="mb-3">Thank you! Your message has been sent, I'll get back to you soon.</p>
             <a href="{{ $whatsappUrl }}" target="_blank"
                 class="inline-flex items-center gap-2 px-4 py-2 text-sm transition rounded-lg btn-scale bg-gradient-accent hover:opacity-90 text-gray-950">
@@ -75,53 +76,53 @@ new class extends Component {
 
     <form wire:submit="submit" class="space-y-5">
         <div>
-            <label class="block mb-1 text-sm text-gray-400">Name</label>
+            <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Name</label>
             <input type="text" wire:model="name"
-                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:border-accent-500 focus:outline-none">
+                class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-accent-500 focus:outline-none">
             @error('name')
-                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                <p class="mt-1 text-sm text-red-500 dark:text-red-400">{{ $message }}</p>
             @enderror
         </div>
 
         <div>
-            <label class="block mb-1 text-sm text-gray-400">Email</label>
+            <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Email</label>
             <input type="email" wire:model="email"
-                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:border-accent-500 focus:outline-none">
+                class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-accent-500 focus:outline-none">
             @error('email')
-                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                <p class="mt-1 text-sm text-red-500 dark:text-red-400">{{ $message }}</p>
             @enderror
         </div>
 
         <div>
-            <label class="block mb-1 text-sm text-gray-400">Company (optional)</label>
+            <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Company (optional)</label>
             <input type="text" wire:model="company" placeholder="Your company / organization name"
-                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:border-accent-500 focus:outline-none">
+                class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:border-accent-500 focus:outline-none">
             @error('company')
-                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                <p class="mt-1 text-sm text-red-500 dark:text-red-400">{{ $message }}</p>
             @enderror
         </div>
 
         <div>
-            <label class="block mb-1 text-sm text-gray-400">Subject (optional)</label>
+            <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Subject (optional)</label>
             <input type="text" wire:model="subject"
-                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:border-accent-500 focus:outline-none">
+                class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-accent-500 focus:outline-none">
         </div>
 
         <div>
-            <label class="block mb-1 text-sm text-gray-400">Interview / Meeting Date</label>
+            <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Interview / Meeting Date</label>
             <input type="date" wire:model="event_date"
-                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:border-accent-500 focus:outline-none [color-scheme:dark]">
+                class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-accent-500 focus:outline-none [color-scheme:light] dark:[color-scheme:dark]">
             @error('event_date')
-                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                <p class="mt-1 text-sm text-red-500 dark:text-red-400">{{ $message }}</p>
             @enderror
         </div>
 
         <div>
-            <label class="block mb-1 text-sm text-gray-400">Message</label>
+            <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Message</label>
             <textarea wire:model="message" rows="5"
-                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:border-accent-500 focus:outline-none"></textarea>
+                class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-accent-500 focus:outline-none"></textarea>
             @error('message')
-                <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                <p class="mt-1 text-sm text-red-500 dark:text-red-400">{{ $message }}</p>
             @enderror
         </div>
 

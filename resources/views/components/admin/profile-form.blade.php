@@ -9,6 +9,7 @@ new class extends Component {
     use WithFileUploads;
 
     public string $name = '';
+    public ?string $role = '';
     public ?string $bio = '';
     public ?string $phone = '';
     public ?string $email = '';
@@ -28,6 +29,7 @@ new class extends Component {
         $profile = Profile::firstOrCreate([], ['name' => 'Naufal Febriansyah']);
 
         $this->name = $profile->name;
+        $this->role = $profile->role;
         $this->bio = $profile->bio;
         $this->phone = $profile->phone;
         $this->email = $profile->email;
@@ -43,6 +45,7 @@ new class extends Component {
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'role' => ['nullable', 'string', 'max:255'],
             'bio' => ['nullable', 'string'],
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:255'],
@@ -63,6 +66,7 @@ new class extends Component {
 
         $data = [
             'name' => $this->name,
+            'role' => $this->role,
             'bio' => $this->bio,
             'phone' => $this->phone,
             'email' => $this->email,
@@ -116,6 +120,16 @@ new class extends Component {
                     <input type="text" wire:model="name"
                         class="w-full px-3 py-2 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-accent-500 focus:outline-none">
                     @error('name')
+                        <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block mb-1 text-sm text-gray-400">Job Title / Role</label>
+                    <input type="text" wire:model="role" placeholder="e.g. Full-Stack Developer"
+                        class="w-full px-3 py-2 text-white bg-gray-800 border border-gray-700 rounded-lg focus:border-accent-500 focus:outline-none">
+                    <p class="mt-1 text-xs text-gray-500">This appears as the headline title on your Hero section.</p>
+                    @error('role')
                         <p class="mt-1 text-xs text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
