@@ -1,58 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Portfolio — Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Backend and admin panel for my personal portfolio website, built with **Laravel 12** and **Livewire 3**. It serves both the public-facing pages (rendered server-side with Blade) and a REST API consumed by a separate [Next.js frontend](https://github.com/Naufalfebri2/Portofolio-frontend).
 
-## About Laravel
+**Live demo:** _coming soon_
+**Frontend repo:** https://github.com/Naufalfebri2/Portofolio-frontend
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Layer            | Technology                                                                |
+| ---------------- | ------------------------------------------------------------------------- |
+| Framework        | Laravel 12, Livewire 3                                                    |
+| Database         | PostgreSQL                                                                |
+| Frontend (Blade) | Tailwind CSS v3, Alpine.js                                                |
+| Auth             | Laravel Breeze (session-based, admin-only — public registration disabled) |
+| Calendar UI      | Flatpickr                                                                 |
+| Mail             | SMTP (Gmail)                                                              |
 
-## Learning Laravel
+## Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Public site
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Home, About, Projects (listing + detail), Contact pages — server-rendered Blade with SEO/Open Graph tags
+- Contact form with interview/meeting date scheduling, WhatsApp redirect after submit, and email notification to the site owner
+- **Dark / light mode** with system-preference detection and persisted user choice (Alpine.js + Tailwind `class` strategy)
+- Scroll-triggered fade-in animations
+- CV download tracking
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Admin panel (`/admin`)
 
-## Agentic Development
+- Dashboard with visitor analytics (page views, top pages, average duration, date range filter)
+- Project CRUD with image gallery management
+- Technology CRUD (categorized: Backend / Frontend / Mobile & Tools)
+- Message inbox — read/unread status, delete, detail view
+- Profile editor — bio, job title/role (drives the public Hero headline), social links, photo, resume upload
+- Protected by session auth + `is_admin` flag middleware; public self-registration is disabled by design
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### REST API (consumed by the Next.js frontend)
+
+- `GET /api/projects`, `GET /api/projects/{slug}`
+- `GET /api/technologies`
+- `GET /api/profile`
+- `POST /api/messages` — rate-limited (5/min), validated, triggers email notification
+- `POST /api/pageview`, `POST /api/pageview/{id}/duration` — visitor analytics, rate-limited (60/min)
+
+Full endpoint reference, including error-case examples, is available as a Postman collection in `/docs` (or on request).
+
+### Automated backup
+
+- Daily database + file backup (`php artisan backup:run`), scheduled via Laravel Scheduler at 00:00 WIB
+- Bundles a `pg_dump` database dump with all uploaded files (profile photo, project images, resume) into a single zip
+- Emails the archive as an attachment and retains the 7 most recent backups locally
+- Requires a server-level cron entry (`* * * * * php artisan schedule:run`) to run unattended in production
+
+## Getting Started
+
+### Requirements
+
+- PHP 8.3+
+- Composer
+- PostgreSQL
+- Node.js & npm (for asset compilation)
+
+### Installation
 
 ```bash
-composer require laravel/boost --dev
+git clone https://github.com/Naufalfebri2/Portofolio-backend.git
+cd Portofolio-backend
 
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
+
+# Configure DB_* and MAIL_* in .env, then:
+php artisan migrate --seed
+php artisan storage:link
+
+npm install
+npm run dev   # or npm run build for production assets
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Run the app:
 
-## Contributing
+```bash
+php artisan serve
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Running the backup command manually
 
-## Code of Conduct
+```bash
+php artisan backup:run
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Project Structure Highlights
 
-## Security Vulnerabilities
+```
+app/Http/Controllers/Api/      REST API controllers for the Next.js frontend
+app/Http/Controllers/Admin/    Admin panel controllers
+app/Console/Commands/          Custom Artisan commands (e.g. RunBackup)
+resources/views/components/    Livewire single-file components
+routes/web.php                 Public routes
+routes/admin.php               Admin panel routes (auth + is_admin protected)
+routes/api.php                 REST API routes
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Security Notes
 
-## License
+- Public user registration is disabled — this is a single-admin application by design
+- `.env` and all sensitive credentials are excluded from version control
+- Database credentials for backups are passed via environment variables, never exposed on the command line
+- API endpoints are rate-limited to prevent abuse
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Author
+
+**Naufal Febriansyah** — Information Systems student, Universitas Pamulang
+[GitHub](https://github.com/Naufalfebri2) · [LinkedIn](https://www.linkedin.com/in/naufal-febriansyah-7b75b31b5/)
