@@ -18,7 +18,7 @@ class MessageController extends Controller
             'is_read' => false,
         ]);
 
-        Mail::to(config('mail.from.address'))->queue(new NewContactMessage($contactMessage));
+        Mail::to(config('mail.from.address'))->send(new NewContactMessage($contactMessage));
 
         $waNumber = config('services.contact.whatsapp_number');
         $waText = urlencode("Halo, saya {$contactMessage->name}. Saya baru saja mengirim pesan lewat portfolio kamu:\n\n\"{$contactMessage->message}\"");

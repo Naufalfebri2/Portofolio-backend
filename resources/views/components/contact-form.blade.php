@@ -64,8 +64,7 @@ new class extends Component {
 
 <div>
     @if ($submitted)
-        <div
-            class="p-4 mb-6 border rounded-lg bg-accent-100 dark:bg-accent-900/30 border-accent-500/40 text-accent-700 dark:text-accent-300">
+        <div class="p-4 mb-6 border rounded-lg bg-accent-100 dark:bg-accent-900/30 border-accent-500/40 text-accent-700 dark:text-accent-300">
             <p class="mb-3">Thank you! Your message has been sent, I'll get back to you soon.</p>
             <a href="{{ $whatsappUrl }}" target="_blank"
                 class="inline-flex items-center gap-2 px-4 py-2 text-sm transition rounded-lg btn-scale bg-gradient-accent hover:opacity-90 text-gray-950">
@@ -108,10 +107,21 @@ new class extends Component {
                 class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-accent-500 focus:outline-none">
         </div>
 
-        <div>
+        <div wire:ignore x-data="{
+                date: @entangle('event_date'),
+            }" x-init="
+                flatpickr($refs.eventDateInput, {
+                    dateFormat: 'Y-m-d',
+                    altInput: true,
+                    altFormat: 'd F Y',
+                    minDate: 'today',
+                    defaultDate: date || null,
+                    onChange: (selectedDates, dateStr) => { date = dateStr; },
+                });
+            ">
             <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Interview / Meeting Date</label>
-            <input type="date" wire:model="event_date"
-                class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-accent-500 focus:outline-none [color-scheme:light] dark:[color-scheme:dark]">
+            <input type="text" x-ref="eventDateInput" placeholder="Select a date" readonly
+                class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-accent-500 focus:outline-none cursor-pointer">
             @error('event_date')
                 <p class="mt-1 text-sm text-red-500 dark:text-red-400">{{ $message }}</p>
             @enderror
