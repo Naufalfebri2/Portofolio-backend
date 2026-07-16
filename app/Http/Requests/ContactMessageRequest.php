@@ -24,6 +24,10 @@ class ContactMessageRequest extends FormRequest
             'subject'    => ['nullable', 'string', 'max:255'],
             'event_date' => ['required', 'date', 'after_or_equal:today'],
             'message'    => ['required', 'string', 'min:10'],
+            // Honeypot — allowed through validation so a bot filling it
+            // doesn't get an obvious 422 that tips it off. The actual
+            // spam check happens in the controller.
+            'website'    => ['nullable', 'string'],
         ];
     }
 

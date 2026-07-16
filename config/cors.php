@@ -7,24 +7,21 @@ return [
     | Cross-Origin Resource Sharing (CORS) Configuration
     |--------------------------------------------------------------------------
     |
-    | Here you may configure your settings for cross-origin resource sharing
-    | or "CORS". This determines what cross-origin operations may execute
-    | in web browsers. You are free to adjust these settings as needed.
+    | Only the Next.js frontend makes cross-origin requests to this API
+    | (the admin panel is server-rendered Livewire within this same
+    | Laravel app, so it never needs CORS at all). In production, set
+    | FRONTEND_URL in .env to the deployed Next.js domain.
     |
     | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*'],
 
     'allowed_methods' => ['*'],
 
-    // Ganti '*' menjadi domain spesifik. Tambahkan env var baru:
-    // FRONTEND_URL=https://namadomain.com
-    // ADMIN_URL=https://admin.namadomain.com
     'allowed_origins' => [
         env('FRONTEND_URL', 'http://localhost:3000'),
-        env('ADMIN_URL', 'http://localhost:5173'),
     ],
 
     'allowed_origins_patterns' => [],
@@ -35,7 +32,6 @@ return [
 
     'max_age' => 0,
 
-    // Wajib true untuk Sanctum SPA cookie-based auth (admin panel)
-    'supports_credentials' => true,
+    'supports_credentials' => false,
 
 ];

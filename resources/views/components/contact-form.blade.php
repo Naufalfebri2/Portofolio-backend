@@ -12,9 +12,14 @@ new class extends Component {
     public string $subject = '';
     public string $event_date = '';
     public string $message = '';
-    public string $website = ''; // honeypot — must stay empty
     public bool $submitted = false;
     public string $whatsappUrl = '';
+
+    // Honeypot field. Invisible to real visitors (hidden off-screen via
+    // CSS), but a bot that blindly fills every input on the page will
+    // populate it. Any non-empty value here means the submission is
+    // almost certainly automated.
+    public string $website = '';
 
     protected function rules(): array
     {
@@ -39,19 +44,16 @@ new class extends Component {
 
     public function submit(): void
     {
-        // Honeypot check: real visitors never see or fill this field.
-        // Bots that auto-fill every input will trip it. We silently
-        // pretend success (same UI state as a real submission) instead
-        // of showing a validation error, so the bot doesn't learn to
-        // adapt and try again with the field left blank.
+        $this->validate();
+
         if (filled($this->website)) {
+            // Silently pretend success so the bot has no signal that it
+            // was caught — no record is created and no email is sent.
             $this->reset(['name', 'email', 'company', 'subject', 'event_date', 'message', 'website']);
             $this->submitted = true;
 
             return;
         }
-
-        $this->validate();
 
         $contactMessage = Message::create([
             'name' => $this->name,
@@ -80,23 +82,19 @@ new class extends Component {
         <div
             class="p-4 mb-6 border rounded-lg bg-accent-100 dark:bg-accent-900/30 border-accent-500/40 text-accent-700 dark:text-accent-300">
             <p class="mb-3">Thank you! Your message has been sent, I'll get back to you soon.</p>
-            @if ($whatsappUrl)
-                <a href="{{ $whatsappUrl }}" target="_blank"
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm transition rounded-lg btn-scale bg-gradient-accent hover:opacity-90 text-gray-950">
-                    Continue via WhatsApp
-                </a>
-            @endif
+            <a href="{{ $whatsappUrl }}" target="_blank"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm transition rounded-lg btn-scale bg-gradient-accent hover:opacity-90 text-gray-950">
+                Continue via WhatsApp
+            </a>
         </div>
     @endif
 
     <form wire:submit="submit" class="space-y-5">
-        {{-- Honeypot field: hidden from real users via CSS, and marked
-             aria-hidden + tabindex="-1" so screen readers and keyboard
-             navigation skip it too. Left visually in the DOM (not
-             display:none) because some bots specifically skip fields
-             hidden that way — absolute positioning off-screen is a more
-             reliable trap. --}}
-        <div class="absolute left-[-9999px]" aria-hidden="true">
+
+        {{-- Honeypot — hidden from real visitors, left unlabeled for
+             screen readers via aria-hidden, and never receives keyboard
+             focus (tabindex="-1"). --}}
+        <div class="absolute w-px h-px overflow-hidden opacity-0 -left-[9999px]" aria-hidden="true">
             <label for="website">Website</label>
             <input type="text" id="website" wire:model="website" tabindex="-1" autocomplete="off">
         </div>
