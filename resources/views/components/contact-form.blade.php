@@ -12,6 +12,7 @@ new class extends Component {
     public string $subject = '';
     public string $event_date = '';
     public string $message = '';
+    public string $website = ''; // honeypot — must stay empty
     public bool $submitted = false;
     public string $whatsappUrl = '';
 
@@ -38,6 +39,18 @@ new class extends Component {
 
     public function submit(): void
     {
+        // Honeypot check: real visitors never see or fill this field.
+        // Bots that auto-fill every input will trip it. We silently
+        // pretend success (same UI state as a real submission) instead
+        // of showing a validation error, so the bot doesn't learn to
+        // adapt and try again with the field left blank.
+        if (filled($this->website)) {
+            $this->reset(['name', 'email', 'company', 'subject', 'event_date', 'message', 'website']);
+            $this->submitted = true;
+
+            return;
+        }
+
         $this->validate();
 
         $contactMessage = Message::create([
@@ -64,16 +77,30 @@ new class extends Component {
 
 <div>
     @if ($submitted)
-        <div class="p-4 mb-6 border rounded-lg bg-accent-100 dark:bg-accent-900/30 border-accent-500/40 text-accent-700 dark:text-accent-300">
+        <div
+            class="p-4 mb-6 border rounded-lg bg-accent-100 dark:bg-accent-900/30 border-accent-500/40 text-accent-700 dark:text-accent-300">
             <p class="mb-3">Thank you! Your message has been sent, I'll get back to you soon.</p>
-            <a href="{{ $whatsappUrl }}" target="_blank"
-                class="inline-flex items-center gap-2 px-4 py-2 text-sm transition rounded-lg btn-scale bg-gradient-accent hover:opacity-90 text-gray-950">
-                Continue via WhatsApp
-            </a>
+            @if ($whatsappUrl)
+                <a href="{{ $whatsappUrl }}" target="_blank"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm transition rounded-lg btn-scale bg-gradient-accent hover:opacity-90 text-gray-950">
+                    Continue via WhatsApp
+                </a>
+            @endif
         </div>
     @endif
 
     <form wire:submit="submit" class="space-y-5">
+        {{-- Honeypot field: hidden from real users via CSS, and marked
+             aria-hidden + tabindex="-1" so screen readers and keyboard
+             navigation skip it too. Left visually in the DOM (not
+             display:none) because some bots specifically skip fields
+             hidden that way — absolute positioning off-screen is a more
+             reliable trap. --}}
+        <div class="absolute left-[-9999px]" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" wire:model="website" tabindex="-1" autocomplete="off">
+        </div>
+
         <div>
             <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Name</label>
             <input type="text" wire:model="name"
@@ -108,17 +135,15 @@ new class extends Component {
         </div>
 
         <div wire:ignore x-data="{
-                date: @entangle('event_date'),
-            }" x-init="
-                flatpickr($refs.eventDateInput, {
-                    dateFormat: 'Y-m-d',
-                    altInput: true,
-                    altFormat: 'd F Y',
-                    minDate: 'today',
-                    defaultDate: date || null,
-                    onChange: (selectedDates, dateStr) => { date = dateStr; },
-                });
-            ">
+            date: @entangle('event_date'),
+        }" x-init="flatpickr($refs.eventDateInput, {
+            dateFormat: 'Y-m-d',
+            altInput: true,
+            altFormat: 'd F Y',
+            minDate: 'today',
+            defaultDate: date || null,
+            onChange: (selectedDates, dateStr) => { date = dateStr; },
+        });">
             <label class="block mb-1 text-sm text-gray-600 dark:text-gray-400">Interview / Meeting Date</label>
             <input type="text" x-ref="eventDateInput" placeholder="Select a date" readonly
                 class="w-full bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white focus:border-accent-500 focus:outline-none cursor-pointer">
