@@ -21,14 +21,29 @@ jobs:
           extensions: mbstring, pdo, pdo_sqlite, zip
           coverage: none
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
       - name: Copy .env.example to .env
         run: cp .env.example .env
 
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
       - name: Generate application key
         run: php artisan key:generate
 
       - name: Run test suite
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
         run: php artisan test
